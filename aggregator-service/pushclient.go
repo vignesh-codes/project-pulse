@@ -104,19 +104,12 @@ func (rs *RedisStream) CheckStream() error {
 		}
 
 		var buff = []redis.XMessage{}
-		var id_buff = map[string]redis.XMessage{}
+
 		todel := make([]string, 0, len(items))
 
 		for _, item := range items {
-			x, f := id_buff[item.ID]
-			// Just a precautionary check to prevent duplicate ids.
-			if f {
-				fmt.Println("found a duplicate key ", item, " \n ", x)
-				continue
-			}
 
 			buff = append(buff, item)
-			id_buff[item.ID] = item
 			todel = append(todel, item.ID)
 			start = item.ID
 		}
@@ -155,7 +148,7 @@ func (pg *PostgreSQLDB) PushToPostgres(b []redis.XMessage) error {
 	if err := json.Unmarshal(jsonData, &logs); err != nil {
 		return fmt.Errorf("failed to unmarshal JSON data: %v", err)
 	}
-
+	var id_buff = map[int]Event{}
 	var payloadData []Event
 	for _, entry := range logs {
 		var payload HP
@@ -164,7 +157,13 @@ func (pg *PostgreSQLDB) PushToPostgres(b []redis.XMessage) error {
 			log.Println("Failed to parse log entry:", err)
 			continue
 		}
-
+		x, f := id_buff[payload.Event.ID]
+		// Just a precautionary check to prevent duplicate ids.
+		if f {
+			fmt.Println("found a duplicate key ", entry, " \n ", x)
+			continue
+		}
+		id_buff[payload.Event.ID] = payload.Event
 		payloadData = append(payloadData, payload.Event)
 	}
 

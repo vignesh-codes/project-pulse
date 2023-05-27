@@ -1,33 +1,31 @@
 package utils
 
 import (
-	"crypto/md5"
-	"encoding/binary"
 	"fmt"
-	"math"
 	"net/http"
 	"pulse-service/logger"
 	"pulse-service/utils/response"
-	"time"
 
+	"github.com/bwmarrin/snowflake"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator"
+	"go.uber.org/zap"
 )
 
+var node *snowflake.Node
+
+func InitSnowflakeNode() error {
+	var err error
+	node, err = snowflake.NewNode(1)
+	if err != nil {
+		logger.Logger.Fatal("Error creating Snowflake node:", zap.Any(logger.KEY_ERROR, err))
+		return err
+	}
+	return nil
+}
+
 func GenerateUUID(str string) int64 {
-	hash := md5.Sum([]byte(str))
-
-	b := hash[:8]
-
-	uuid := int64(binary.BigEndian.Uint64(b))
-
-	timestamp := time.Now().UnixNano()
-
-	uniqueID := (timestamp << 16) | (uuid & 0x0000FFFF)
-
-	uniqueID = int64(math.Abs(float64(uniqueID)))
-
-	return uniqueID
+	return node.Generate().Int64()
 }
 
 func BindJSON(c *gin.Context, req interface{}) bool {

@@ -5,6 +5,7 @@ import (
 	"pulse-service/apps/repository/instance"
 	"pulse-service/apps/routes"
 	"pulse-service/constants"
+	"pulse-service/utils"
 
 	"context"
 	"fmt"
@@ -20,6 +21,7 @@ func main() {
 
 	logger.InitLogger()
 	logger.InitEventLogger()
+	utils.InitSnowflakeNode()
 	// configs := config.GetConfig()
 	// aws := instance.GetAwsSession()
 	RedisDBConnection := instance.GetRedisConnection()

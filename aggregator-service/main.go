@@ -58,7 +58,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		rs := NewRedisStream(client)
-		for range time.Tick(time.Second * 30) {
+		for range time.Tick(time.Second * 10) {
 			if !getRedisLock() {
 				if err := rs.CheckStream(); err != nil {
 					log.Println("Error occurred:", err)
