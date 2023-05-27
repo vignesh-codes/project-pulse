@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  fluent:
+    image: fluent-v1
+    network_mode: host
+    privileged: true
+    volumes:
+      - /Users/logs:/logs
+    restart: always
+
+  agg:
+    image: agg-v1
+    network_mode: host
+    restart: always
+
+  pulse:
+    image: pulse
+    network_mode: host
+    volumes:
+      - /Users/logs:/go/logs
+    restart: always
+
+  redis:
+    image: redis
+    container_name: redisv1
+    ports:
+      - '6379:6379'
+    restart: always
+
+  postgres:
+    image: postgres
+    container_name: postgresv1
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+    ports:
+      - '4432:5432'
+    restart: always
+  
+  test:
+    image: test-client
+    network_mode: host
+    deploy:
+      mode: none
