@@ -1,5 +1,11 @@
 
 # Pulse Service
+A go-service log aggregator using fluent-bit, redis streams and postgres.
+
+fluent-bit - log aggregator
+aggregator-service - go service that updates redis, reads redis and pushes to postgres
+
+test - a python script to make concurrent requests
 
 Go --> logfiles --> fluent-bit --> go-fluent-helper-aggregator --> redis --> go-fluent-helper-aggregator --> postgres
 
@@ -23,7 +29,7 @@ cd test
 docker build -t test-client .
 
 cd fluent-bit
-docker built -t fluent .
+docker build -t fluent .
 
 docker compose up redis postgres pulse agg fluent -d
 

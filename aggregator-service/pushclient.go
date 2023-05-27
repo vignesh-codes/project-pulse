@@ -15,6 +15,7 @@ import (
 var start = "-"
 var prevStart = start
 
+// maintaining mutex to handle concurrent read write on same var
 var (
 	redis_lock bool
 	mutex      sync.Mutex
@@ -34,6 +35,7 @@ func getRedisLock() bool {
 	return redis_lock
 }
 
+// must be from env
 const redis_key string = "mystream"
 
 func InitPushClient() {
@@ -71,6 +73,12 @@ func InitPushClient() {
 	})
 }
 
+/*
+checks redis streams
+if count > 1, processes it
+if count is > 1000, it keeps processing it and locks further execution of checkStream
+function until all logs are process at this instance itself
+*/
 func (rs *RedisStream) CheckStream() error {
 	defer func() {
 		updateRedisLock(false)
@@ -82,9 +90,6 @@ func (rs *RedisStream) CheckStream() error {
 	if err != nil {
 		return fmt.Errorf("failed to get stream length: %v", err)
 	}
-
-	fmt.Println("start ", start)
-	fmt.Println("prev start ", prevStart)
 
 	for c >= 1 {
 		if c > 1000 {

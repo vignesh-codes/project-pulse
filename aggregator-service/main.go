@@ -46,6 +46,7 @@ func NewRedisStream(client *redis.Client) *RedisStream {
 	}
 }
 
+// Connects to redis and psql and starts 30s tick to check redis
 func main() {
 	client = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
