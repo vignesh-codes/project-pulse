@@ -24,7 +24,7 @@ func InitSnowflakeNode() error {
 	return nil
 }
 
-func GenerateUUID(str string) int64 {
+func GenerateUUID() int64 {
 	return node.Generate().Int64()
 }
 

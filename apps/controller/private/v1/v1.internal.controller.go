@@ -38,6 +38,6 @@ func (ctrl EventLoggerController) LogActivity(ctx *gin.Context) {
 		return
 	}
 	request.EventSource = event_source.(string)
-	request.Id = int(utils.GenerateUUID(request.EventSource))
+	request.Id = int(utils.GenerateUUID())
 	ctrl.v1EventLoggerDao.LogActivity(ctx, *request)
 }
