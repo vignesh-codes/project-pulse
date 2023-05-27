@@ -2,10 +2,7 @@ FROM fluent/fluent-bit
 
 COPY fluent-bit.conf /fluent-bit/etc/fluent-bit.conf
 
-# Copy custom_parsers.conf to the desired location
 COPY custom_parsers.conf /fluent-bit/etc/custom_parsers.conf
 
-# Specify the command to run Fluent Bit with the desired arguments
 CMD ["fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.conf", "-p", "/fluent-bit/etc/custom_parsers.conf"]
-# Mount the log file directory from the log generator container
 VOLUME /logs

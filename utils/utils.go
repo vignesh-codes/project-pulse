@@ -15,22 +15,16 @@ import (
 )
 
 func GenerateUUID(str string) int64 {
-	// Generate MD5 hash of the input string
 	hash := md5.Sum([]byte(str))
 
-	// Extract the first 8 bytes of the MD5 hash
 	b := hash[:8]
 
-	// Convert the byte slice to an int64 value
 	uuid := int64(binary.BigEndian.Uint64(b))
 
-	// Get the current timestamp in nanoseconds
 	timestamp := time.Now().UnixNano()
 
-	// Combine the timestamp and UUID to create a unique value
 	uniqueID := (timestamp << 16) | (uuid & 0x0000FFFF)
 
-	// Take the absolute value of the unique ID to ensure it's positive
 	uniqueID = int64(math.Abs(float64(uniqueID)))
 
 	return uniqueID
